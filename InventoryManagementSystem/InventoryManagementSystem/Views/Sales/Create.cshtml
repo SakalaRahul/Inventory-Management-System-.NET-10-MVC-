@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "New Sale";
+    var products = ViewBag.Products as List<InventoryManagementSystem.Models.Product>;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white py-3">
+                <h4 class="mb-0"><i class="fa-solid fa-cash-register me-2"></i>Process New Sale</h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Customer Name</label>
+                        <input type="text" name="customerName" class="form-control" value="Walk-in Customer" />
+                    </div>
+
+                    <h5 class="fw-bold mt-4 mb-3">Select Products</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Available Stock</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (products != null)
+                                {
+                                    int index = 0;
+                                    foreach (var p in products)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="productIds" value="@p.Id" class="form-check-input product-check" id="prod_@p.Id" />
+                                            </td>
+                                            <td class="fw-semibold">@p.Name (@p.SKU)</td>
+                                            <td>$@p.SellingPrice.ToString("N2")</td>
+                                            <td><span class="badge bg-secondary">@p.StockQuantity</span></td>
+                                            <td>
+                                                <input type="number" name="quantities" value="1" min="1" max="@p.StockQuantity" class="form-control form-control-sm" style="width: 100px;" />
+                                            </td>
+                                        </tr>
+                                        index++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Back to Sales</a>
+                        <button type="submit" class="btn btn-success"><i class="fa-solid fa-check me-1"></i> Complete Sale</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

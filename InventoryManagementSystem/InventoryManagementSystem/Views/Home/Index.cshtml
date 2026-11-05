@@ -1,0 +1,146 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    var lowStockProducts = ViewBag.LowStockProducts as List<InventoryManagementSystem.Models.Product>;
+    var recentSales = ViewBag.RecentSales as List<InventoryManagementSystem.Models.Sale>;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold text-dark"><i class="fa-solid fa-chart-pie text-primary me-2"></i>Executive Dashboard</h1>
+    <div>
+        <a asp-controller="Sales" asp-action="Create" class="btn btn-success"><i class="fa-solid fa-plus me-1"></i> New Sale</a>
+        <a asp-controller="Products" asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-box-open me-1"></i> Add Product</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-primary text-white">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase fw-semibold">Total Products</h6>
+                <h2 class="display-6 fw-bold mb-0">@ViewBag.TotalProducts</h2>
+                <small><i class="fa-solid fa-box me-1"></i> Active inventory items</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-success text-white">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase fw-semibold">Total Revenue</h6>
+                <h2 class="display-6 fw-bold mb-0">$@ViewBag.TotalSales.ToString("N2")</h2>
+                <small><i class="fa-solid fa-wallet me-1"></i> Recorded sales</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-warning text-dark">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase fw-semibold">Categories</h6>
+                <h2 class="display-6 fw-bold mb-0">@ViewBag.TotalCategories</h2>
+                <small><i class="fa-solid fa-tags me-1"></i> Product groupings</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-info text-white">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase fw-semibold">Suppliers</h6>
+                <h2 class="display-6 fw-bold mb-0">@ViewBag.TotalSuppliers</h2>
+                <small><i class="fa-solid fa-truck me-1"></i> Partner vendors</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0 text-danger"><i class="fa-solid fa-triangle-exclamation me-2"></i>Low Stock Alerts</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th>SKU</th>
+                                <th>Stock</th>
+                                <th>Reorder Level</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (lowStockProducts != null && lowStockProducts.Any())
+                            {
+                                foreach (var p in lowStockProducts)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@p.Name</td>
+                                        <td><code>@p.SKU</code></td>
+                                        <td><span class="badge bg-danger">@p.StockQuantity</span></td>
+                                        <td>@p.ReorderLevel</td>
+                                        <td>
+                                            <a asp-controller="Products" asp-action="Details" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">View</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-3 text-muted">All stock levels are optimal.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0 text-primary"><i class="fa-solid fa-receipt me-2"></i>Recent Sales</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sale ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (recentSales != null && recentSales.Any())
+                            {
+                                foreach (var s in recentSales)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">#@s.Id</td>
+                                        <td>@s.CustomerName</td>
+                                        <td class="text-success fw-bold">$@s.TotalAmount.ToString("N2")</td>
+                                        <td>@s.SaleDate.ToLocalTime().ToString("g")</td>
+                                        <td>
+                                            <a asp-controller="Sales" asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-3 text-muted">No recent sales recorded.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

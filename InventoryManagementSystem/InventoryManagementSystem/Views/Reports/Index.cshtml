@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Reports & Analytics";
+    var transactions = ViewBag.StockTransactions as List<InventoryManagementSystem.Models.StockTransaction>;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold text-dark"><i class="fa-solid fa-file-excel text-success me-2"></i>Reports & Analytics</h1>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-white border-start border-primary border-4">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase fw-semibold">Inventory Valuation (Cost)</h6>
+                <h3 class="fw-bold text-primary mb-0">$@ViewBag.TotalInventoryValue.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-white border-start border-success border-4">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase fw-semibold">Potential Sales Revenue</h6>
+                <h3 class="fw-bold text-success mb-0">$@ViewBag.TotalPotentialSales.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-white border-start border-danger border-4">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase fw-semibold">Low Stock Items Count</h6>
+                <h3 class="fw-bold text-danger mb-0">@ViewBag.LowStockCount</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="card-title mb-0"><i class="fa-solid fa-clock-rotate-left me-2"></i>Recent Stock Movements</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Product</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Reference</th>
+                        <th>User</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (transactions != null && transactions.Any())
+                    {
+                        foreach (var st in transactions)
+                        {
+                            var badgeClass = st.Type == InventoryManagementSystem.Models.TransactionType.In ? "bg-success" : "bg-danger";
+                            <tr>
+                                <td>@st.CreatedAt.ToLocalTime().ToString("g")</td>
+                                <td class="fw-semibold">@(st.Product?.Name ?? "N/A")</td>
+                                <td><span class="badge @badgeClass">@st.Type</span></td>
+                                <td>@st.Quantity</td>
+                                <td>@st.Reference</td>
+                                <td>@(st.User?.Email ?? "System")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-3 text-muted">No stock transactions recorded.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

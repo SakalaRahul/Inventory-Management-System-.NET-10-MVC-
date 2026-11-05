@@ -1,0 +1,17 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.card {
+    border-radius: 0.5rem;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+}
+
+.navbar-brand {
+    letter-spacing: 0.5px;
+}
